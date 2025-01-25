@@ -5,3 +5,4 @@ dist
 coverage
 *.log
 .docker-data
+.env
