@@ -1,0 +1,14 @@
+services:
+  mongodb:
+    image: mongo:6.0.20
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./.docker-data/data:/data/db
+    networks:
+      - backend
+    restart: always
+
+networks:
+  backend:
+    driver: bridge
