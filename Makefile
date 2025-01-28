@@ -8,3 +8,7 @@ down:
 
 build:
 	docker-compose build
+
+
+run_sync:
+	go run cmd/sync.go
