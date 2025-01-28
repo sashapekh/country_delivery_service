@@ -61,7 +61,7 @@ func (np *Novaposhta) GetAllRegions() ([]Region, error) {
 
 }
 
-func (np *Novaposhta) GetSettlments(areaRef string) ([]Settlement, error) {
+func (np *Novaposhta) GetSettlments(areaRef string) ([]SettlementCountryRegion, error) {
 	modelName := "AddressGeneral"
 	calledMethod := "getSettlementCountryRegion"
 
@@ -92,7 +92,7 @@ func (np *Novaposhta) GetSettlments(areaRef string) ([]Settlement, error) {
 		return nil, err
 	}
 
-	var settlements []Settlement
+	var settlements []SettlementCountryRegion
 
 	err = json.Unmarshal(dataBytes, &settlements)
 

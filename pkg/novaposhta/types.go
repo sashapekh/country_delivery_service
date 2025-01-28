@@ -7,9 +7,9 @@ type Region struct {
 	AreasCenter string `json:"AreasCenter"`
 }
 
-type Settlement struct {
-	AreasCenter string `json:"AreasCenter"`
-	Description string `json:"Description"`
+type SettlementCountryRegion struct {
 	Ref         string `json:"Ref"`
+	Description string `json:"Description"`
 	RegionType  string `json:"RegionType"`
+	AreasCenter string `json:"AreasCenter"`
 }
