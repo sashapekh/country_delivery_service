@@ -21,6 +21,8 @@ func main() {
 
 	syncService := sync.NewSyncServiceHanlder(repo, np)
 
-	syncService.SyncRegions()
-	syncService.SyncSettlmentRegions()
+	// syncService.SyncRegions()
+	// syncService.SyncSettlmentRegions()
+	// syncService.SyncSettlments()
+	syncService.SyncWarehouses()
 }

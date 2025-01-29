@@ -19,7 +19,7 @@ func (h *SyncServiceHanlder) SyncSettlmentRegions() error {
 	}
 
 	for _, region := range regions {
-		settlements, err := h.novaposhta.GetSettlments(region.NpRef)
+		settlements, err := h.novaposhta.GetSettlementCountryRegions(region.NpRef)
 		if err != nil {
 			continue
 		}

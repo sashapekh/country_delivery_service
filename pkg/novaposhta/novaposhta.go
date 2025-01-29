@@ -61,29 +61,18 @@ func (np *Novaposhta) GetAllRegions() ([]Region, error) {
 
 }
 
-func (np *Novaposhta) GetSettlments(areaRef string) ([]SettlementCountryRegion, error) {
-	modelName := "AddressGeneral"
-	calledMethod := "getSettlementCountryRegion"
+func (np *Novaposhta) GetSettlementCountryRegions(areaRef string) ([]SettlementCountryRegion, error) {
 
-	requestBody := map[string]interface{}{
-		"apiKey":       os.Getenv("NOVAPOSHTA_API_KEY"),
-		"modelName":    modelName,
-		"calledMethod": calledMethod,
-		"methodProperties": map[string]string{
+	body, err := np.makeRequest(
+		"AddressGeneral",
+		"getSettlementCountryRegion",
+		map[string]string{
 			"AreaRef": areaRef,
 		},
-	}
-
-	req := apiparser.Request{
-		Url:    Endpoint,
-		Method: "POST",
-		Body:   requestBody,
-	}
-
-	body, err := np.client.MakeRequest(req)
+	)
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	dataBytes, err := helpers.ExtractRawJSONField(body, "data")
@@ -101,4 +90,97 @@ func (np *Novaposhta) GetSettlments(areaRef string) ([]SettlementCountryRegion, 
 	}
 
 	return settlements, nil
+}
+
+func (np *Novaposhta) GetSettlements(page string, limit string) (SettlementResultByPage, error) {
+	body, err := np.makeRequest(
+		"AddressGeneral",
+		"getSettlements",
+
+		map[string]string{
+			"Page":  page,
+			"Limit": limit,
+		},
+	)
+
+	if err != nil {
+		return SettlementResultByPage{}, err
+	}
+
+	var settmentsResponse SettlementsResponse
+
+	err = json.Unmarshal(body, &settmentsResponse)
+
+	if err != nil {
+		return SettlementResultByPage{}, err
+	}
+	var settlements []Settlement
+	bodyExtract, err := helpers.ExtractRawJSONField(body, "data")
+
+	if err != nil {
+		return SettlementResultByPage{}, err
+	}
+
+	err = json.Unmarshal(bodyExtract, &settlements)
+
+	if err != nil {
+		return SettlementResultByPage{}, err
+	}
+	return SettlementResultByPage{
+		Page:       page,
+		TotalCount: settmentsResponse.Info.TotalCount,
+		Items:      settlements,
+	}, nil
+}
+
+func (np *Novaposhta) GetWarehousesByCityRef(ref string) ([]Warehouse, error) {
+
+	request, err := np.makeRequest(
+		"Address",
+		"getWarehouses",
+		map[string]string{
+			"SettlementRef": ref,
+		})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var warehouses []Warehouse
+	bodyExtract, err := helpers.ExtractRawJSONField(request, "data")
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(bodyExtract, &warehouses)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return warehouses, nil
+
+}
+func (np *Novaposhta) makeRequest(modelName string, calledMethod string, properties map[string]string) ([]byte, error) {
+	requestBody := map[string]interface{}{
+		"apiKey":           os.Getenv("NOVAPOSHTA_API_KEY"),
+		"modelName":        modelName,
+		"calledMethod":     calledMethod,
+		"methodProperties": properties,
+	}
+
+	req := apiparser.Request{
+		Url:    Endpoint,
+		Method: "POST",
+		Body:   requestBody,
+	}
+
+	body, err := np.client.MakeRequest(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
 }
