@@ -1,7 +1,6 @@
 package sync
 
 import (
-	"fmt"
 	"sashapekh/country_delivery_service/internal/repositories"
 	"time"
 
@@ -9,8 +8,6 @@ import (
 )
 
 func (h *SyncServiceHanlder) SyncRegions() error {
-	h.logger.Info("SyncRegions() started")
-
 	regions, err := h.novaposhta.GetAllRegions()
 
 	if err != nil {
@@ -27,8 +24,6 @@ func (h *SyncServiceHanlder) SyncRegions() error {
 			CreatedAt: time.Now().String(),
 			UpdatedAt: time.Now().String(),
 		}
-
-		h.logger.Info(fmt.Sprintf("Inserting region %s", region.Description))
 
 		err := h.RepoHandler.InsertRegion(mongoRegion)
 
