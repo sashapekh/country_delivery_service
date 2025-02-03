@@ -40,7 +40,7 @@ func (np *Novaposhta) GetAllRegions() ([]Region, error) {
 	responseBody, err := np.client.MakeRequest(req)
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	dataBytes, err := helpers.ExtractRawJSONField(responseBody, "data")

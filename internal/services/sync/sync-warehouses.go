@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	max_settlement_job       = 20
+	max_settlement_job       = 10
 	max_warehouses_inert_job = 100
 )
 
