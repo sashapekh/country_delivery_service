@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -45,9 +46,24 @@ func (p *Client) post(req Request) ([]byte, error) {
 	resp, err := http.Post(req.Url, "application/json", preparedBody)
 
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("unexpected status code: %d", resp.StatusCode)
+		// body to string for error message
+
+		bodyBytes, err := io.ReadAll(resp.Body)
+
+		if err != nil {
+			return nil, err
+		}
+		bodyString := string(bodyBytes)
+		fmt.Printf("statusCode: %d, body: %s", resp.StatusCode, bodyString)
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 

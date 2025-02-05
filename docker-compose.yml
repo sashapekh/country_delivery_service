@@ -2,13 +2,45 @@ services:
   mongodb:
     image: mongo:6.0.20
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - ./.docker-data/data:/data/db
     networks:
       - backend
     restart: always
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false # Disable security for simplicity, not recommended for production
+    ports:
+      - '9200:9200'
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.9.0
+    ports:
+      - '5000:5000' # відкриваємо порт для отримання логів від застосунку
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.9.0
+    environment:
+      ELASTICSEARCH_URL: https://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - '5601:5601'
+    depends_on:
+      - elasticsearch
 networks:
   backend:
     driver: bridge
+
+volumes:
+  esdata:
+    driver: local

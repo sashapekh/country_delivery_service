@@ -1,0 +1,20 @@
+# Filebeat configuration file example
+
+filebeat.inputs:
+- type: log
+  enabled: true
+  # Шлях до файлу(ів) з логами, які створює ваш застосунок
+  paths:
+  - /path/to/your/logs/golang-logs-*.log
+  # Опціонально: налаштування для обробки мультирядкових повідомлень
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}' # Наприклад, якщо логи починаються з дати (YYYY-MM-DD)
+  multiline.negate: true
+  multiline.match: after
+
+# Вивід логів до Logstash
+output.logstash:
+  # Вказуємо Logstash-хости (якщо Logstash запущено як сервіс у Docker, можна використовувати ім'я сервісу)
+  hosts: [ "localhost:5000" ]
+
+# Додаткові налаштування (наприклад, підключення до Elasticsearch) можна вказувати за потреби,
+# але для цього прикладу ми відправляємо логи до Logstash.
