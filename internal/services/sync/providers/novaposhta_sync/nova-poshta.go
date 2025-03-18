@@ -1,4 +1,4 @@
-package providers
+package novaposhta_sync
 
 import (
 	"sashapekh/country_delivery_service/internal/repositories"
@@ -28,7 +28,7 @@ func SyncRegionsNovaposhta(
 			UpdatedAt: time.Now().String(),
 		}
 
-		repoH.InsertRegion(mongoRegion)
+		repoH.InsertOrCreate(mongoRegion)
 	}
 
 	return nil

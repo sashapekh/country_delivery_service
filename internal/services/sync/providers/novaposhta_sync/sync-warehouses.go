@@ -1,4 +1,4 @@
-package sync
+package novaposhta_sync
 
 import (
 	"context"

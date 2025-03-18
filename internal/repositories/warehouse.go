@@ -36,7 +36,7 @@ func (h *RepoHandler) WarehouseCreateOrInsertViaRef(warehouse Warehouse) error {
 			"longitude":      warehouse.Longitude,
 			"latitude":       warehouse.Latitude,
 			"active":         warehouse.Active,
-			"updated_at":     time.Now().String(),
+			"updated_at":     time.Now(),
 		},
 		"$setOnInsert": bson.M{
 			"created_at": time.Now().String(),

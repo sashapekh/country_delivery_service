@@ -1,12 +1,8 @@
-package sync
-
-import (
-	"sashapekh/country_delivery_service/internal/services/sync/providers"
-)
+package novaposhta_sync
 
 func (h *SyncServiceHanlder) SyncRegions() error {
 
-	err := providers.SyncRegionsNovaposhta(
+	err := SyncRegionsNovaposhta(
 		h.novaposhta,
 		h.RepoHandler,
 	)

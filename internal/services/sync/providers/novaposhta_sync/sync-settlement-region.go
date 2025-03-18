@@ -1,4 +1,4 @@
-package sync
+package novaposhta_sync
 
 import (
 	"fmt"
@@ -29,7 +29,10 @@ func (h *SyncServiceHanlder) SyncSettlmentRegions() error {
 				settlement novaposhta.SettlementCountryRegion,
 				region repositories.Region,
 			) {
-				h.processSettlement(settlement, region.NpRef)
+				err = h.processSettlement(settlement, region.NpRef)
+				if err != nil {
+					h.logger.Error(err.Error(), "region", region.NpRef)
+				}
 			}(
 				settlement,
 				region,
@@ -59,7 +62,7 @@ func (h *SyncServiceHanlder) processSettlement(settlment novaposhta.SettlementCo
 		UpdatedAt:  time.Now().String(),
 	}
 
-	err = h.RepoHandler.InsertSettlementCountryRegion(newSettlement)
+	err = h.RepoHandler.InsertOrUpdateSettlementCountryRegion(newSettlement)
 
 	if err != nil {
 		return err

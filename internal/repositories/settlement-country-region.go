@@ -21,7 +21,7 @@ type SettlementCountryRegion struct {
 	Active     bool               `bson:"active"`
 }
 
-func (h *RepoHandler) InsertSettlementCountryRegion(settlementCountryRegion SettlementCountryRegion) error {
+func (h *RepoHandler) InsertOrUpdateSettlementCountryRegion(settlementCountryRegion SettlementCountryRegion) error {
 	collection := h.getDatabase().Collection(SETTLEMENT_COUNTRY_REGION_COLLECTION_NAME)
 	_, err := collection.InsertOne(context.Background(), settlementCountryRegion)
 	if err != nil {

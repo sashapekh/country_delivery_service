@@ -1,4 +1,4 @@
-package sync
+package novaposhta_sync
 
 import (
 	"log/slog"
@@ -12,7 +12,7 @@ type SyncServiceHanlder struct {
 	logger      *slog.Logger
 }
 
-func NewSyncServiceHanlder(
+func New(
 	repoHandler *repositories.RepoHandler,
 	novaposhta *novaposhta.Novaposhta,
 	slog *slog.Logger,

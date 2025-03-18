@@ -5,6 +5,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const REGION_COLLECTION_NAME = "regions"
@@ -18,12 +19,28 @@ type Region struct {
 	UpdatedAt string             `bson:"updated_at"`
 }
 
-func (h *RepoHandler) InsertRegion(region Region) error {
-	collection := h.getDatabase().Collection(REGION_COLLECTION_NAME)
-	_, err := collection.InsertOne(context.Background(), region)
+func (h *RepoHandler) InsertOrCreate(region Region) error {
+
+	filter := bson.M{"np_ref": region.NpRef}
+	update := bson.M{
+		"$set": bson.M{
+			"name":       region.Name,
+			"slug":       region.Slug,
+			"np_ref":     region.NpRef,
+			"updated_at": region.UpdatedAt,
+		},
+		"$setOnInsert": bson.M{
+			"created_at": region.CreatedAt,
+		},
+	}
+
+	_, err := h.getDatabase().Collection(REGION_COLLECTION_NAME).
+		UpdateOne(context.Background(), filter, update, options.Update().SetUpsert(true))
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 func (h *RepoHandler) GetAllRegions() ([]Region, error) {
